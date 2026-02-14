@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stresser Panel - Welcome</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">STRESSER</a>
+            <nav>
+                <a href="/login.html" class="btn btn-secondary">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="hero-section">
+            <h1>The Ultimate Stress Testing Platform</h1>
+            <p>Leverage our powerful, distributed network to ensure your application's stability and performance under pressure.</p>
+            <a href="/login.html" class="btn btn-primary">Get Started</a>
+        </div>
+    </main>
+
+    <script>
+        // If user is already logged in, redirect to dashboard
+        if (localStorage.getItem('jwt_token')) {
+            window.location.href = '/dashboard.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#141414">
+    <title>Stresser Panel - Attack Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e50914;
+            --primary-hover: #ff1f2b;
+            --bg-dark: #000000;
+            --bg-panel: rgba(20, 20, 20, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #f0f0f0;
+            --text-muted: #a3a3a3;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --warning: #f1c40f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #e50914, #000, #e50914, #000);
+            background-size: 400% 400%;
+            animation: gradient-bg 15s ease infinite;
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        @keyframes gradient-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-wrapper {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border-color);
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            position: relative;
+            left: 0;
+        }
+
+        .sidebar-header {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(229, 9, 20, 0.15);
+            color: var(--primary);
+            border-color: rgba(229, 9, 20, 0.3);
+        }
+
+        .nav-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 1rem 0;
+        }
+
+        .logout-item {
+            width: 100%;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        .user-mini-profile {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .user-email-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-plan-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .app-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .top-bar {
+            height: var(--header-height);
+            background-color: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(229, 9, 20, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(229, 9, 20, 0.5);
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 1;
+        }
+
+        .plan-icon { background: rgba(255, 215, 0, 0.1); color: #ffd700; }
+        .concurrents-icon { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+        .time-icon { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+        .cooldown-icon { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+
+        .stat-info { z-index: 1; }
+
+        .stat-info h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .panel-section {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .panel-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .panel-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .panel-header h3 i {
+            color: var(--primary);
+        }
+
+        .panel-body {
+            padding: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+        }
+
+        .input-icon-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .input-icon-wrapper input,
+        .input-icon-wrapper select {
+            width: 100%;
+            background-color: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            appearance: none;
+        }
+
+        .input-icon-wrapper input:focus,
+        .input-icon-wrapper select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.25);
+        }
+
+        .input-icon-wrapper input:focus + i,
+        .input-icon-wrapper select:focus + i {
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 1rem;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .message-box, .error-box, .success-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .error-box {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--error);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+        }
+
+        .success-box {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(46, 204, 113, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                height: 100%;
+                box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .btn-icon {
+                display: block;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .form-row .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .content-wrapper {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Password Change Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--bg-panel);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--primary);
+            width: 90%; max-width: 400px;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-main);
+        }
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/dashboard.html" class="logo">STRESSER</a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-gauge-high"></i> <span>Dashboard</span>
+                </a>
+                <a href="/attack-hub.html" class="nav-item active">
+                    <i class="fa-solid fa-list-check"></i> <span>Attack Hub</span>
+                </a>
+                <a href="/ip-lookup.html" class="nav-item">
+                    <i class="fa-solid fa-magnifying-glass-location"></i> <span>IP Lookup</span>
+                </a>
+                <a href="#" class="nav-item" title="Coming Soon">
+                    <i class="fa-solid fa-credit-card"></i> <span>Purchase Plan</span>
+                </a>
+                <a href="#" class="nav-item" title="Coming Soon">
+                    <i class="fa-solid fa-headset"></i> <span>Support</span>
+                </a>
+                <div class="nav-divider"></div>
+                <button id="logout-btn" class="nav-item logout-item">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                </button>
+            </nav>
+            <div class="user-mini-profile"> <div class="user-avatar"> <i class="fa-solid fa-user"></i> </div> <div class="user-details"> <span id="user-email" class="user-email-text">Loading...</span> <span id="user-plan-badge" class="user-plan-text">Free</span> </div> </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <header class="top-bar">
+                <button id="sidebar-toggle" class="btn-icon">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h2 class="page-title">Attack Hub</h2>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- Attack Panel -->
+                <section class="panel-section">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-rocket"></i> Launch Attack</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form id="attack-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="target">Target (IP / Host)</label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa-solid fa-crosshairs"></i>
+                                        <input type="text" id="target" placeholder="1.1.1.1" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="port">Port</label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa-solid fa-network-wired"></i>
+                                        <input type="number" id="port" min="1" max="65535" placeholder="80" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="duration">Duration (Seconds)</label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa-solid fa-clock"></i>
+                                        <input type="number" id="duration" min="1" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="method">Attack Method</label>
+                                    <div class="input-icon-wrapper">
+                                        <i class="fa-solid fa-list-ul"></i>
+                                        <select id="method" required>
+                                            <option value="">Loading methods...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" id="launch-btn" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-paper-plane"></i> Send Attack
+                            </button>
+                        </form>
+                        <div id="error-message" class="message-box"></div>
+                    </div>
+                </section>
+
+                <!-- Running Attacks Panel -->
+                <section class="panel-section" style="margin-top: 2rem;">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-list-check"></i> Running Attacks</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table" id="attacks-table">
+                                <thead>
+                                    <tr>
+                                        <th>Target</th>
+                                        <th>Method</th>
+                                        <th>Expires In</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attacks-list">
+                                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">No active attacks</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">Change Password Required</h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">You must change your password to continue.</p>
+            <form id="change-password-form">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <input type="password" id="new-password" placeholder="New Password" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); background: var(--bg-dark); color: white;">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

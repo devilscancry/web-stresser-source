@@ -1,0 +1,10 @@
+﻿{
+    "server_port": "80",
+    "db_user": "root",
+    "db_password": "password",
+    "db_host": "127.0.0.1",
+    "db_port": "3306",
+    "db_name": "stresser",
+    "jwt_secret": "a-very-secret-and-long-key-for-jwt",
+    "discord_bot_token": "YOUR_DISCORD_BOT_TOKEN_HERE"
+}

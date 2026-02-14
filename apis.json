@@ -1,0 +1,14 @@
+﻿{
+    "UDP-FLOOD": {
+        "api_url": "http://yourapi.com/attack?key=APIKEY&target={target}&port={port}&duration={duration}&method=UDP",
+        "plan": "free"
+    },
+    "TCP-ACK": {
+        "api_url": "http://yourapi.com/attack?key=APIKEY&target={target}&port={port}&duration={duration}&method=ACK",
+        "plan": "all"
+    },
+    "NTP-AMP": {
+        "api_url": "http://anotherapi.net/start?target={target}&port={port}&time={duration}",
+        "plan": "vip"
+    }
+}
